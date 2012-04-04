@@ -1,0 +1,14 @@
+inst :set, reg(:A), reg(:B)
+inst :add, reg(:A), regmem(:C)
+inst :sub, reg(:A), iregmem(:X, 1)
+inst :div, reg(:A), pop
+inst :mod, reg(:A), peek
+inst :shl, reg(:A), push
+inst :shr, reg(:A), sp
+inst :and, reg(:A), pc
+inst :bor, reg(:A), o
+inst :xor, reg(:A), imem(5)
+inst :ife, reg(:A), imm(1)
+inst :ifn, reg(:A), imm(32)
+inst :ifg, reg(:I), reg(:Y)
+inst :ifb, reg(:J), reg(:Z)

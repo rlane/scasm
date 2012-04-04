@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+require 'trollop'
+require 'scasm/isa'
+
+opts = Trollop.options do
+  banner <<-EOS
+scasm-disassembler
+
+Usage:
+       scasm-disassembler [options] [file]
+
+where [options] are:
+EOS
+end
+
+mem = ARGF.read.unpack("v*")
+addr = 0
+basic_opcode_map = SCASM::BASIC_OPCODES.invert
+register_map = SCASM::REGISTERS.invert
+
+read_immediate = lambda do
+  word = mem[addr]
+  addr += 1
+  word
+end
+
+decode_op = lambda do |opcode|
+  basic_opcode_map[opcode] || ("opcode(%#x)" % opcode)
+end
+
+decode_value = lambda do |value|
+  if value <= 0x07
+    "reg(#{register_map[value]})"
+  elsif value <= 0x0f
+    "regmem(#{register_map[value-0x08]})"
+  elsif value <= 0x17
+    "iregmem(#{register_map[value-0x10]}, #{read_immediate[]})"
+  elsif value == 0x18
+    'pop'
+  elsif value == 0x19
+    'peek'
+  elsif value == 0x1a
+    'push'
+  elsif value == 0x1b
+    'sp'
+  elsif value == 0x1c
+    'pc'
+  elsif value == 0x1d
+    'overflow'
+  elsif value == 0x1e
+    "imem(#{read_immediate[]})"
+  elsif value == 0x1f
+    "imm(#{read_immediate[]})"
+  elsif value < 0x3f
+    "imm(#{value-0x20})"
+  end
+end
+
+while addr < mem.size
+  inst = mem[addr]
+  addr += 1
+  opcode = inst & 0xf
+  code_a = (inst >> 4) & 0x3f
+  code_b = (inst >> 10) & 0x3f
+  opsym = decode_op[opcode]
+  val_a = decode_value[code_a]
+  val_b = decode_value[code_b]
+  printf "%s %s, %s\n", opsym, val_a, val_b
+end
