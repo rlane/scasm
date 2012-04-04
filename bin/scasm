@@ -81,6 +81,11 @@ class Slate < BasicObject
   def imm imm
     Immediate.new imm
   end
+
+  # Add a method for each instruction
+  BASIC_OPCODES.each do |opsym,opcode|
+    define_method(opsym) { |*a| inst opsym, *a }
+  end
 end
 
 class Statement
