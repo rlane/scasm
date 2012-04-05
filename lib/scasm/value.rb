@@ -171,7 +171,7 @@ class ImmediateLabel < Value
   end
 
   def to_s
-    @name.inspect
+    "l(#{@name.inspect})"
   end
 end
 
