@@ -22,7 +22,7 @@ addr = 0
 basic_opcode_map = SCASM::BASIC_OPCODES.invert
 register_map = SCASM::REGISTERS.invert
 
-read_immediate = lambda do
+next_word = lambda do
   word = mem[addr]
   addr += 1
   word
@@ -38,7 +38,7 @@ decode_value = lambda do |value|
   elsif value <= 0x0f
     RegisterMemory.new register_map[value-0x08]
   elsif value <= 0x17
-    OffsetRegisterMemory.new register_map[value-0x10], read_immediate[]
+    OffsetRegisterMemory.new register_map[value-0x10], next_word[]
   elsif value == 0x18
     Pop.new
   elsif value == 0x19
@@ -52,9 +52,9 @@ decode_value = lambda do |value|
   elsif value == 0x1d
     O.new
   elsif value == 0x1e
-    ImmediateMemory.new read_immediate[]
+    ImmediateMemory.new next_word[]
   elsif value == 0x1f
-    Immediate.new read_immediate[]
+    Immediate.new next_word[]
   elsif value < 0x3f
     Immediate.new(value-0x20)
   end
@@ -63,11 +63,10 @@ end
 stmts = []
 
 while addr < mem.size
-  inst = mem[addr]
-  addr += 1
-  opcode = inst & 0xf
-  code_a = (inst >> 4) & 0x3f
-  code_b = (inst >> 10) & 0x3f
+  word = next_word[]
+  opcode = word & 0xf
+  code_a = (word >> 4) & 0x3f
+  code_b = (word >> 10) & 0x3f
   opsym = decode_op[opcode]
   a = decode_value[code_a]
   b = decode_value[code_b]
