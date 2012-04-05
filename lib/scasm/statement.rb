@@ -28,6 +28,10 @@ class Instruction < Statement
       fail "unknown opsym #{@opsym.inspect}"
     end
   end
+
+  def to_s
+    "%s %s, %s" % [@opsym, @a, @b]
+  end
 end
 
 class Data < Statement

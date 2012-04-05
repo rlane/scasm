@@ -60,6 +60,8 @@ decode_value = lambda do |value|
   end
 end
 
+stmts = []
+
 while addr < mem.size
   inst = mem[addr]
   addr += 1
@@ -67,7 +69,11 @@ while addr < mem.size
   code_a = (inst >> 4) & 0x3f
   code_b = (inst >> 10) & 0x3f
   opsym = decode_op[opcode]
-  val_a = decode_value[code_a].to_s
-  val_b = decode_value[code_b].to_s
-  printf "%s %s, %s # pc=%#x\n", opsym, val_a, val_b, addr
+  a = decode_value[code_a]
+  b = decode_value[code_b]
+  stmts << Instruction.new(opsym, a, b)
+end
+
+stmts.each do |stmt|
+  puts stmt
 end
