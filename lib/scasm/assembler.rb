@@ -82,6 +82,10 @@ class Assembler < BasicObject
     ImmediateLabel.new(name).tap { |x| @relocations << x }
   end
 
+  def data *words
+    @stmts << Data.new(words)
+  end
+
   # Add a method for each instruction
   BASIC_OPCODES.each do |opsym,opcode|
     define_method(opsym) { |a,b| inst opsym, a, b }

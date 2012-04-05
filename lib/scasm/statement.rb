@@ -53,6 +53,17 @@ class Instruction < Statement
 end
 
 class Data < Statement
+  def initialize words
+    @words = words
+  end
+
+  def assemble io
+    io.write @words.pack('v*')
+  end
+
+  def to_s
+    "data #{@words * ', '}"
+  end
 end
 
 class Label < Statement

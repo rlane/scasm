@@ -130,4 +130,9 @@ class AssemblerTest < Test::Unit::TestCase
     expect [0x7c10, 0x0020]
     check 'jsr 32'
   end
+
+  def test_data
+    expect [1, 2, 3, 4, 65535]
+    check 'data 1, 2, 3, 4, 65535'
+  end
 end

@@ -62,6 +62,13 @@ Labels are defined by the `label` statement. To refer to a label, just use its n
    add A, 1
    set pc, "loop"
 
+### Data
+
+Use the `data` statement to put arbitrary words into the binary.
+
+   label "sin_lookup_table"
+   data 0, 0x38f6, 0x6f12, 0x9f9c, 0xc825, 0xe6a4, 0xf993, 0xffff
+
 ### Miscellaneous
 
 These values have the same meaning as in the spec:
