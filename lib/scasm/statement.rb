@@ -12,6 +12,13 @@ class Statement
   def to_s
     fail 'unimplemented'
   end
+
+  # XXX HACK
+  def length
+    io = StringIO.new
+    assemble io
+    io.length/2
+  end
 end
 
 class Instruction < Statement
@@ -53,6 +60,10 @@ class Label < Statement
 
   def initialize name
     @name = name
+  end
+
+  def assemble io
+    # nop
   end
 
   def to_s
