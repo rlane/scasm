@@ -65,5 +65,5 @@ while addr < mem.size
   opsym = decode_op[opcode]
   val_a = decode_value[code_a]
   val_b = decode_value[code_b]
-  printf "%s %s, %s\n", opsym, val_a, val_b
+  printf "%s %s, %s # pc=%#x\n", opsym, val_a, val_b, addr
 end
