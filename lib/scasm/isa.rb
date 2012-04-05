@@ -1,5 +1,13 @@
 module SCASM
 
+EXT_OPCODE = 0
+
+INDIRECT = 0x08
+INDIRECT_OFFSET = 0x10
+INDIRECT_NEXT = 0x1e
+NEXT = 0x1f
+LITERAL = 0x20
+
 BASIC_OPCODES = {
   :ext => 0x0,
   :set => 0x1,

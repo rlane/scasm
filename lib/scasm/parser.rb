@@ -6,40 +6,12 @@ module SCASM
 
 # TODO keep track of line number for error reporting
 class Parser
-  def self.declare(map, start, string)
-    count = start
-    string.split(" ").each do |token|
-      map[token] = count
-      count += 1
-    end
-  end
-
   HEX_RE = /^0[xX][0-9a-fA-F]+$/
   INT_RE = /^\d+$/
   REG_RE = /^[A-Z]+$/
   LABEL_RE = /^[a-z]+$/
   INDIRECT_RE = /^\[.+\]/
   INDIRECT_OFFSET_RE = /^[^+]+\+[^+]+$/
-
-  EXT_PREFIX = 0
-
-  INDIRECT = 0x08
-  INDIRECT_OFFSET = 0x10
-  INDIRECT_NEXT = 0x1e
-  NEXT = 0x1f
-  LITERAL = 0x20
-
-  INSTRUCTIONS = {}
-  EXTENDED_INSTRUCTIONS = {}
-  VALUES = {}
-
-  declare(INSTRUCTIONS, 1, "SET ADD SUB MUL DIV MOD SHL SHR AND BOR XOR IFE IFN IFG IFB")
-  declare(EXTENDED_INSTRUCTIONS, 1, "JSR")
-  declare(VALUES, 0, "A B C X Y Z I J")
-  declare(VALUES, 0x18, "POP PEEK PUSH SP PC O")
-
-  def initialize
-  end
 
   def clean(line)
     line.gsub(/;.*/, "").gsub(/,/, " ").gsub(/\s+/, " ").strip

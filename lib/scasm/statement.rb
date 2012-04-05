@@ -31,16 +31,20 @@ class Instruction < Statement
     @b = b
   end
 
+  def make_word opcode, code_a, code_b
+    code = opcode | (code_a<<4) | (code_b<<10)
+  end
+
   def assemble io
     if opcode = BASIC_OPCODES[@opsym]
       code_a, imm_a = @a.assemble
       code_b, imm_b = @b.assemble
-      code = opcode | (code_a<<4) | (code_b<<10)
+      code = make_word opcode, code_a, code_b
       io.write [code, imm_a, imm_b].compact.pack('v*')
     elsif opcode = EXTENDED_OPCODES[@opsym]
       code_a, imm_a = @a.assemble
       fail unless @b == nil
-      code = (opcode<<4) | (code_a<<10)
+      code = make_word EXT_OPCODE, opcode, code_a
       io.write [code, imm_a].compact.pack('v*')
     else
       fail "unknown opsym #{@opsym.inspect}"
