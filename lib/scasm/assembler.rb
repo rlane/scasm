@@ -138,25 +138,25 @@ private
       x1, x2, = x
       if x1.is_a? ::Symbol and x2 == nil
         # [reg]
-        regmem x1
+        RegisterMemory.new x1
       elsif x1.is_a? ::Symbol and x2.is_a? ::Integer
         # [reg, imm]
-        iregmem x1, x2
+        OffsetRegisterMemory.new x1, x2
       elsif x1.is_a? ::Integer
         # [imm]
-        imem x1
+        ImmediateMemory.new x1
       else
         ::Kernel.fail "invalid memory access syntax"
       end
     when ::Symbol
       # register
-      reg x
+      Register.new x
     when ::String
       # label
-      l x
+      ImmediateLabel.new(x).tap { |v| @relocations << v }
     when ::Integer
       # immediate
-      imm x
+      Immediate.new x
     else
       ::Kernel.raise "unexpected value class #{x.class}"
     end
