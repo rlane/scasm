@@ -19,9 +19,10 @@ end
 
 mem = ARGF.read.unpack("v*")
 addr = 0
-basic_opcode_map = SCASM::BASIC_OPCODES.invert
-extended_opcode_map = SCASM::EXTENDED_OPCODES.invert
-register_map = SCASM::REGISTERS.invert
+basic_opcode_map = BASIC_OPCODES.invert
+extended_opcode_map = EXTENDED_OPCODES.invert
+register_map = REGISTERS.invert
+special_register_map = SPECIAL_REGISTERS.invert
 
 next_word = lambda do
   word = mem[addr]
@@ -33,27 +34,24 @@ decode_value = lambda do |value|
   if value <= 0x07
     Register.new register_map[value]
   elsif value <= 0x0f
-    RegisterMemory.new register_map[value-0x08]
+    RegisterMemory.new register_map[value-INDIRECT]
   elsif value <= 0x17
-    OffsetRegisterMemory.new register_map[value-0x10], next_word[]
-  elsif value == 0x18
-    Pop.new
-  elsif value == 0x19
-    Peek.new
-  elsif value == 0x1a
-    Push.new
-  elsif value == 0x1b
-    SP.new
-  elsif value == 0x1c
-    PC.new
-  elsif value == 0x1d
-    O.new
-  elsif value == 0x1e
+    OffsetRegisterMemory.new register_map[value-INDIRECT_OFFSET], next_word[]
+  elsif sr = special_register_map[value]
+    case sr
+    when :pop then Pop.new
+    when :peek then Peek.new
+    when :push then Push.new
+    when :sp then SP.new
+    when :pc then PC.new
+    when :o then O.new
+    end
+  elsif value == INDIRECT_NEXT
     ImmediateMemory.new next_word[]
-  elsif value == 0x1f
+  elsif value == NEXT
     Immediate.new next_word[]
-  elsif value < 0x3f
-    Immediate.new(value-0x20)
+  else
+    Immediate.new(value-LITERAL)
   end
 end
 
@@ -68,11 +66,11 @@ while addr < mem.size
   code_b = (word >> 10) & 0x3f
 
   if opcode != 0 then
-    opsym = basic_opcode_map[opcode] or fail "unknown opcode #{opcode} at #{start_addr}"
+    opsym = basic_opcode_map[opcode] or ($stderr.puts "unknown opcode #{opcode} at #{start_addr}"; next)
     a = decode_value[code_a]
     b = decode_value[code_b]
   else
-    opsym = extended_opcode_map[code_a] or fail "unknown extended opcode #{code_a} at #{start_addr}"
+    opsym = extended_opcode_map[code_a] or ($stderr.puts "unknown extended opcode #{code_a} at #{start_addr}"; next)
     a = decode_value[code_b]
     b = nil
   end
