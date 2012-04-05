@@ -55,6 +55,11 @@ class Assembler < Object
     define_method(opsym) { |a| inst opsym, a, nil }
   end
 
+  # "and" is a reserved word
+  def and_ a, b
+    self.and a, b
+  end
+
   ## Values
 
   def pop

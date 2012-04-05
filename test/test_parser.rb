@@ -26,12 +26,12 @@ class ParserTest < Test::Unit::TestCase
   end
 
   def test_instructions
-    expect [
-      Instruction.new(:add, Register.new(:A), Immediate.new(1))
-    ]
+    %w(set add sub mul div mod shl shr and bor xor ife ifn ifg ifb).each do |op|
+      expect [Instruction.new(op.to_sym, Register.new(:A), Immediate.new(1))]
+      check "#{op} A, 1"
+    end
 
-    check <<-EOS
-      add A, 1
-    EOS
+    expect [Instruction.new(:jsr, Register.new(:A), nil)]
+    check "jsr A"
   end
 end

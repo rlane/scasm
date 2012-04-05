@@ -92,7 +92,7 @@ class Parser
       a = parse_value tokens.shift
       Instruction.new token.to_sym, a, nil
     else
-      fail "No such instruction: #{opsym}"
+      fail "No such instruction: #{token}"
     end
   end
 
