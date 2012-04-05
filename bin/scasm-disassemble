@@ -8,7 +8,7 @@ include SCASM
 
 opts = Trollop.options do
   banner <<-EOS
-scasm-disassembler
+scasm-disassembler - Disassemble DCPU-16 binaries.
 
 Usage:
        scasm-disassembler [options] [file]

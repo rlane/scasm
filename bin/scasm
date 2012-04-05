@@ -6,7 +6,7 @@ opts = Trollop.options do
   banner <<-EOS
 scasm - the Ship Computer Assembler
 
-This is an assembler for the DCPU-16 computer used in the game 0x10c.
+SCASM is an assembler for the DCPU-16 computer used in the game 0x10c.
 CPU specs: http://0x10c.com/doc/dcpu-16.txt
 
 Usage:
@@ -16,6 +16,7 @@ where [options] are:
 EOS
 
   opt :output, "Output filename", :short => 'o', :type => :string
+  opt :help, "Show this message", :short => 'h'
 
   text <<-EOS
 
