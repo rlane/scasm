@@ -40,7 +40,7 @@ class RegisterMemory < Value
   end
 
   def assemble
-    return 0x08 + REGISTERS[@regsym]
+    return INDIRECT + REGISTERS[@regsym]
   end
 
   def to_s
@@ -62,7 +62,7 @@ class OffsetRegisterMemory < Value
   end
 
   def assemble
-    return (0x10 + REGISTERS[@regsym]), @imm
+    return (INDIRECT_OFFSET + REGISTERS[@regsym]), @imm
   end
 
   def to_s
@@ -76,7 +76,7 @@ end
 
 class Pop < Value
   def assemble
-    return 0x18
+    return SPECIAL_REGISTERS[:pop]
   end
 
   def to_s
@@ -90,7 +90,7 @@ end
 
 class Peek < Value
   def assemble
-    return 0x19
+    return SPECIAL_REGISTERS[:peek]
   end
 
   def to_s
@@ -104,7 +104,7 @@ end
 
 class Push < Value
   def assemble
-    return 0x1a
+    return SPECIAL_REGISTERS[:push]
   end
 
   def to_s
@@ -118,7 +118,7 @@ end
 
 class SP < Value
   def assemble
-    return 0x1b
+    return SPECIAL_REGISTERS[:sp]
   end
 
   def to_s
@@ -132,7 +132,7 @@ end
 
 class PC < Value
   def assemble
-    return 0x1c
+    return SPECIAL_REGISTERS[:pc]
   end
 
   def to_s
@@ -146,7 +146,7 @@ end
 
 class O < Value
   def assemble
-    return 0x1d
+    return SPECIAL_REGISTERS[:o]
   end
 
   def to_s
@@ -166,7 +166,7 @@ class ImmediateMemory < Value
   end
 
   def assemble
-    return 0x1e, @imm
+    return INDIRECT_NEXT, @imm
   end
 
   def to_s
@@ -186,10 +186,10 @@ class Immediate < Value
   end
 
   def assemble
-    if @imm <= 0x1f
-      return 0x20 + @imm
+    if @imm <= NEXT
+      return LITERAL + @imm
     else
-      return 0x1f, @imm
+      return NEXT, @imm
     end
   end
 
@@ -221,7 +221,7 @@ class ImmediateLabel < Value
 
   def assemble
     #fail unless @imm
-    return 0x1f, (@imm||0) # HACK
+    return NEXT, (@imm||0) # HACK
   end
 
   def to_s
