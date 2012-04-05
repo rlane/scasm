@@ -23,4 +23,4 @@ TODO
 Contributing
 ------------
 
-Fork the project on GitHub and send me a merge request.
+Fork the project on GitHub and send me a pull request.
