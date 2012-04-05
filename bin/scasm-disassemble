@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 require 'trollop'
 require 'scasm/isa'
+require 'scasm/statement'
+require 'scasm/value'
+
+include SCASM
 
 opts = Trollop.options do
   banner <<-EOS
@@ -30,29 +34,29 @@ end
 
 decode_value = lambda do |value|
   if value <= 0x07
-    "reg(#{register_map[value]})"
+    Register.new register_map[value]
   elsif value <= 0x0f
-    "regmem(#{register_map[value-0x08]})"
+    RegisterMemory.new register_map[value-0x08]
   elsif value <= 0x17
-    "iregmem(#{register_map[value-0x10]}, #{read_immediate[]})"
+    OffsetRegisterMemory.new register_map[value-0x10], read_immediate[]
   elsif value == 0x18
-    'pop'
+    Pop.new
   elsif value == 0x19
-    'peek'
+    Peek.new
   elsif value == 0x1a
-    'push'
+    Push.new
   elsif value == 0x1b
-    'sp'
+    SP.new
   elsif value == 0x1c
-    'pc'
+    PC.new
   elsif value == 0x1d
-    'o'
+    O.new
   elsif value == 0x1e
-    "imem(#{read_immediate[]})"
+    ImmediateMemory.new read_immediate[]
   elsif value == 0x1f
-    "imm(#{read_immediate[]})"
+    Immediate.new read_immediate[]
   elsif value < 0x3f
-    "imm(#{value-0x20})"
+    Immediate.new(value-0x20)
   end
 end
 
@@ -63,7 +67,7 @@ while addr < mem.size
   code_a = (inst >> 4) & 0x3f
   code_b = (inst >> 10) & 0x3f
   opsym = decode_op[opcode]
-  val_a = decode_value[code_a]
-  val_b = decode_value[code_b]
+  val_a = decode_value[code_a].to_s
+  val_b = decode_value[code_b].to_s
   printf "%s %s, %s # pc=%#x\n", opsym, val_a, val_b, addr
 end
