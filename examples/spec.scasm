@@ -18,7 +18,7 @@ ifn 1, 0
 
 # Call a subroutine
 set X, 4
-ext B, "testsub"  # JSR NYI
+jsr "testsub"
 set pc, "crash"
 label "testsub"
 shl X, 4

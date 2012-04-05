@@ -20,16 +20,13 @@ end
 mem = ARGF.read.unpack("v*")
 addr = 0
 basic_opcode_map = SCASM::BASIC_OPCODES.invert
+extended_opcode_map = SCASM::EXTENDED_OPCODES.invert
 register_map = SCASM::REGISTERS.invert
 
 next_word = lambda do
   word = mem[addr]
   addr += 1
   word
-end
-
-decode_op = lambda do |opcode|
-  basic_opcode_map[opcode] || ("opcode(%#x)" % opcode)
 end
 
 decode_value = lambda do |value|
@@ -70,15 +67,26 @@ while addr < mem.size
   code_a = (word >> 4) & 0x3f
   code_b = (word >> 10) & 0x3f
 
-  opsym = decode_op[opcode]
-  a = decode_value[code_a]
-  b = decode_value[code_b]
+  if opcode != 0 then
+    opsym = basic_opcode_map[opcode] or fail "unknown opcode #{opcode} at #{start_addr}"
+    a = decode_value[code_a]
+    b = decode_value[code_b]
+  else
+    opsym = extended_opcode_map[code_a] or fail "unknown extended opcode #{code_a} at #{start_addr}"
+    a = decode_value[code_b]
+    b = nil
+  end
 
-  if a.is_a? PC and b.is_a? Immediate
+  if opsym == :set and a.is_a? PC and b.is_a? Immediate
     imm = b.value
     b = ImmediateLabel.new "L#{b.value}"
     b.resolve imm
     jumps[imm] << b
+  elsif opsym == :jsr and a.is_a? Immediate
+    imm = a.value
+    a = ImmediateLabel.new "L#{a.value}"
+    a.resolve imm
+    jumps[imm] << a
   end
 
   inst = Instruction.new(opsym, a, b)

@@ -122,4 +122,12 @@ class AssemblerTest < Test::Unit::TestCase
       set pc, 'loop'
     EOS
   end
+
+  def test_ext_insts
+    expect [0x0010]
+    check 'jsr A'
+    
+    expect [0x7c10, 0x0020]
+    check 'jsr 32'
+  end
 end

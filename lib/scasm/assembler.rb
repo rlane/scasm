@@ -84,7 +84,11 @@ class Assembler < BasicObject
 
   # Add a method for each instruction
   BASIC_OPCODES.each do |opsym,opcode|
-    define_method(opsym) { |*a| inst opsym, *a }
+    define_method(opsym) { |a,b| inst opsym, a, b }
+  end
+
+  EXTENDED_OPCODES.each do |opsym,opcode|
+    define_method(opsym) { |a| inst opsym, a, nil }
   end
 
   # Add a constant for each register
@@ -114,7 +118,7 @@ private
   # Shorter notation for values
   def parse_value x
     case x
-    when Value
+    when Value, ::NilClass
       x
     when ::Array
       x1, x2, = x
