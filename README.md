@@ -10,6 +10,11 @@ instruction set. This assembler is different and powerful because the
 code you write is actually Ruby, meaning you can use all the capabilities
 of a high-level programming language to help generate the final machine code.
 
+Installation
+------------
+
+    gem install scasm
+
 Example
 -------
 
