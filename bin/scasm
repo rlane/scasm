@@ -15,6 +15,14 @@ Usage:
 
 where [options] are:
 EOS
+
+  opt :output, "Output filename", :short => 'o', :type => :string
+
+  text <<-EOS
+
+If no input file is given input is read from stdin. If no output file is given
+the output will be written to filename.bin or stdout.
+  EOS
 end
 
 module SCASM
@@ -231,9 +239,21 @@ end
 
 end
 
+if ARGV[0]
+  input_io = File.open(ARGV[0])
+else
+  input_io = $stdin
+end
+
+if opts[:output]
+  output_io = File.open(opts[:output], 'w')
+elsif input_io != $stdin
+  filename = File.join(File.dirname(input_io.path), File.basename(input_io.path, '.scasm') + '.bin')
+  output_io = File.open(filename, 'w')
+else
+  output_io = $stdout
+end
+
 slate = SCASM::Slate.new
-slate.eval ARGF.read
-output = slate.assemble
-$stdout.write output
-#text = output.unpack("v*").map { |x| "%#x" % x }.join("\n")
-#puts text
+slate.eval input_io.read
+output_io.write slate.assemble
