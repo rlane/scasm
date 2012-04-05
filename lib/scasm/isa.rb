@@ -34,4 +34,13 @@ REGISTERS = {
   :J => 7,
 }
 
+SPECIAL_REGISTERS = {
+  :pop => 0x18,
+  :peek => 0x19,
+  :push => 0x1a,
+  :sp => 0x1b,
+  :pc => 0x1c,
+  :o => 0x1d,
+}
+
 end

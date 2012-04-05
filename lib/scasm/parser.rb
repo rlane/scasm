@@ -14,7 +14,7 @@ class Parser
     end
   end
 
-  HEX_RE = /^0x[0-9a-fA-F]+$/
+  HEX_RE = /^0[xX][0-9a-fA-F]+$/
   INT_RE = /^\d+$/
   REG_RE = /^[A-Z]+$/
   LABEL_RE = /^[a-z]+$/
@@ -52,6 +52,18 @@ class Parser
 
   def parse_value token
     token = dehex(token)
+    sym = token.downcase.to_sym
+
+    if SPECIAL_REGISTERS.member? sym
+      return case sym
+      when :pop then Pop.new
+      when :peek then Peek.new
+      when :push then Push.new
+      when :sp then SP.new
+      when :pc then PC.new
+      when :o then O.new
+      end
+    end
 
     case token
     when INT_RE
@@ -66,7 +78,7 @@ class Parser
       when INT_RE
         ImmediateMemory.new inner.to_i
       when REG_RE
-        Register.new inner.to_sym
+        RegisterMemory.new inner.to_sym
       when LABEL_RE
         ImmediateLabel.new inner
       when INDIRECT_OFFSET_RE
