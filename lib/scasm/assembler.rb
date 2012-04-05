@@ -23,10 +23,13 @@ class Assembler < BasicObject
   end
 
   def inst opsym, a, b
+    a = parse_value a
+    b = parse_value b
     @stmts << Instruction.new(opsym, a, b)
   end
 
   def label name
+    ::Kernel.raise "label names must be strings" unless name.is_a? ::String
     @stmts << Label.new(name)
   end
 
@@ -75,6 +78,7 @@ class Assembler < BasicObject
   end
 
   def l name
+    ::Kernel.raise "label names must be strings" unless name.is_a? ::String
     ImmediateLabel.new(name).tap { |x| @relocations << x }
   end
 
@@ -104,6 +108,39 @@ private
     @relocations.each do |x|
       addr = label_addrs[x.name] or ::Kernel.raise "undefined label #{x.name.inspect}"
       x.resolve addr
+    end
+  end
+
+  # Shorter notation for values
+  def parse_value x
+    case x
+    when Value
+      x
+    when ::Array
+      x1, x2, = x
+      if x1.is_a? ::Symbol and x2 == nil
+        # [reg]
+        regmem x1
+      elsif x1.is_a? ::Symbol and x2.is_a? ::Integer
+        # [reg, imm]
+        iregmem x1, x2
+      elsif x1.is_a? ::Integer
+        # [imm]
+        imem x1
+      else
+        ::Kernel.fail "invalid memory access syntax"
+      end
+    when ::Symbol
+      # register
+      reg x
+    when ::String
+      # label
+      l x
+    when ::Integer
+      # immediate
+      imm x
+    else
+      ::Kernel.raise "unexpected value class #{x.class}"
     end
   end
 end
