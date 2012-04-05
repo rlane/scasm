@@ -21,7 +21,9 @@ Example
     foo = A
     bar = B
     offset = 42
+    label "loop"
     add [foo, offset], bar
+    set pc, "loop"
 
 See the examples directory for more sample code.
 
@@ -51,6 +53,14 @@ Examples:
 ### Literals
 
 Literal values are just given as integers. Example: `42` or `0x200`.
+
+### Labels
+
+Labels are defined by the `label` statement. To refer to a label, just use its name. For example:
+
+   label "loop"
+   add A, 1
+   set pc, "loop"
 
 ### Miscellaneous
 
