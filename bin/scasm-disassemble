@@ -46,7 +46,7 @@ decode_value = lambda do |value|
   elsif value == 0x1c
     'pc'
   elsif value == 0x1d
-    'overflow'
+    'o'
   elsif value == 0x1e
     "imem(#{read_immediate[]})"
   elsif value == 0x1f
