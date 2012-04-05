@@ -1,0 +1,29 @@
+# Translation of the example code from the DPU-16 spec.
+
+# Try some basic stuff
+set A, 48
+set [4096], 32
+sub A, [4096]
+ifn A, 16
+  set pc, "crash"
+
+# Do a loopy thing
+set I, 10
+set A, 8192
+label "loop"
+set [I, 8192], [A]
+sub I, 1
+ifn 1, 0
+  set pc, "loop"
+
+# Call a subroutine
+set X, 4
+ext B, "testsub"  # JSR NYI
+set pc, "crash"
+label "testsub"
+shl X, 4
+set pc, pop
+
+# Hang forever. X should now be 0x40 if everything went right.
+label "crash"
+set pc, "crash"
