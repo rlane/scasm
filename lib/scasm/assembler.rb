@@ -5,7 +5,7 @@ require 'scasm/value'
 
 module SCASM
 
-class Assembler < BasicObject
+class Assembler < Object
   def initialize
     @stmts = []
     @relocations = []
@@ -17,7 +17,7 @@ class Assembler < BasicObject
 
   def assemble
     resolve_labels
-    io = ::StringIO.new
+    io = StringIO.new
     @stmts.each { |stmt| stmt.assemble io }
     io.string
   end
@@ -31,7 +31,7 @@ class Assembler < BasicObject
   end
 
   def label name
-    ::Kernel.raise "label names must be strings" unless name.is_a? ::String
+    raise "label names must be strings" unless name.is_a? String
     @stmts << Label.new(name)
   end
 
@@ -103,7 +103,7 @@ private
     end
 
     @relocations.each do |x|
-      addr = label_addrs[x.name] or ::Kernel.raise "undefined label #{x.name.inspect}"
+      addr = label_addrs[x.name] or raise "undefined label #{x.name.inspect}"
       x.resolve addr
     end
   end
@@ -111,33 +111,33 @@ private
   # Create explicit Values from the shorthand syntax
   def parse_value x
     case x
-    when Value, ::NilClass
+    when Value, NilClass
       x
-    when ::Array
+    when Array
       x1, x2, = x
-      if x1.is_a? ::Symbol and x2 == nil
+      if x1.is_a? Symbol and x2 == nil
         # [reg]
         RegisterMemory.new x1
-      elsif x1.is_a? ::Symbol and x2.is_a? ::Integer
+      elsif x1.is_a? Symbol and x2.is_a? Integer
         # [reg, imm]
         OffsetRegisterMemory.new x1, x2
-      elsif x1.is_a? ::Integer
+      elsif x1.is_a? Integer
         # [imm]
         ImmediateMemory.new x1
       else
-        ::Kernel.fail "invalid memory access syntax"
+        fail "invalid memory access syntax"
       end
-    when ::Symbol
+    when Symbol
       # register
       Register.new x
-    when ::String
+    when String
       # label
       ImmediateLabel.new(x).tap { |v| @relocations << v }
-    when ::Integer
+    when Integer
       # immediate
       Immediate.new x
     else
-      ::Kernel.raise "unexpected value class #{x.class}"
+      raise "unexpected value class #{x.class}"
     end
   end
 end
