@@ -135,4 +135,25 @@ class AssemblerTest < Test::Unit::TestCase
     expect [1, 2, 3, 4, 65535]
     check 'data 1, 2, 3, 4, 65535'
   end
+
+  def test_jmp
+    expect [
+      0x7dc1, 0x0000,
+    ]
+
+    check <<-EOS
+      label 'loop'
+      jmp 'loop'
+    EOS
+  end
+
+  def test_ret
+    expect [
+      0x61c1
+    ]
+
+    check <<-EOS
+      ret
+    EOS
+  end
 end

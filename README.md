@@ -36,6 +36,32 @@ SCASM input is Ruby code, but you won't need a deep understanding of Ruby to
 get started. Simple statements like `add A, 1` work just like you expect. This
 section will cover the SCASM-specific syntax.
 
+### Instructions
+
+To emit an instruction just write its lower-case name followed by the values:
+
+````ruby
+add A, 1
+jsr X
+````
+
+The one exception is the `and` instruction, which must be written as `and_`
+because `and` is a reserved word in Ruby.
+
+### Pseudoinstructions
+
+* `jmp label` - Equivalent to `set pc, label`.
+* `ret` - Equivalent to `set pc, pop`.
+
+To make your own pseudoinstructions/macros just define a Ruby method. For
+example, here's how `jmp` is implemented:
+
+````ruby
+def jmp label
+  set pc, label
+end
+````
+
 ### Registers
 
 Ruby variables named `A`, `B`, `C`, `X`, `Y`, `Z`, `I`, and `J` are provided to refer to the

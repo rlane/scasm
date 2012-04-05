@@ -100,6 +100,16 @@ class Assembler < BasicObject
     const_set regsym, regsym
   end
 
+  ## Pseudoinstructions
+
+  def jmp label
+    set pc, label
+  end
+
+  def ret
+    set pc, pop
+  end
+
 private
   
   def resolve_labels
