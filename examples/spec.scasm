@@ -13,7 +13,7 @@ set A, 8192
 label "loop"
 set [I, 8192], [A]
 sub I, 1
-ifn 1, 0
+ifn I, 0
   set pc, "loop"
 
 # Call a subroutine
