@@ -2,6 +2,7 @@ require 'stringio'
 require 'scasm/isa'
 require 'scasm/statement'
 require 'scasm/value'
+require 'scasm/parser'
 
 module SCASM
 
@@ -37,6 +38,12 @@ class Assembler < Object
 
   def data *words
     @stmts << Data.new(words)
+  end
+
+  def asm text
+    parser = Parser.new
+    result = parser.parse text
+    @stmts.concat result
   end
 
   # Add a method for each instruction

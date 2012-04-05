@@ -50,9 +50,15 @@ class Instruction < Statement
   def to_s
     "%s %s, %s" % [@opsym, @a, @b]
   end
+
+  def == o
+    opsym == o.opsym and a == o.a and b == o.b
+  end
 end
 
 class Data < Statement
+  attr_reader :words
+
   def initialize words
     @words = words
   end
@@ -63,6 +69,10 @@ class Data < Statement
 
   def to_s
     "data #{@words * ', '}"
+  end
+
+  def == o
+    words == o.words
   end
 end
 
@@ -79,6 +89,10 @@ class Label < Statement
 
   def to_s
     "label #{@name.inspect}"
+  end
+
+  def == o
+    name == o.name
   end
 end
 

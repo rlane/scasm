@@ -136,4 +136,9 @@ class AssemblerTest < Test::Unit::TestCase
       ret
     EOS
   end
+
+  def test_asm
+    expect [0x8401]
+    check "asm 'set A, 1'"
+  end
 end
