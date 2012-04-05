@@ -1,0 +1,6 @@
+def jmpx label
+  set pc, label
+end
+
+label "foo"
+jmpx "foo"

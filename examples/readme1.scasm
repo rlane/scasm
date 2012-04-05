@@ -1,0 +1,7 @@
+
+    foo = A
+    bar = B
+    offset = 42
+    label "loop"
+    add [foo, offset], bar
+    set pc, "loop"

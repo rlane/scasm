@@ -1,0 +1,3 @@
+   label "loop"
+   add A, 1
+   set pc, "loop"
