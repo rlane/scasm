@@ -52,7 +52,11 @@ class Instruction < Statement
   end
 
   def to_s
-    "%s %s, %s" % [@opsym, @a, @b]
+    if @b
+      "%s %s, %s" % [@opsym, @a, @b]
+    else
+      "%s %s" % [@opsym, @a]
+    end
   end
 
   def == o

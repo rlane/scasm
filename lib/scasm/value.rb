@@ -23,7 +23,7 @@ class Register < Value
   end
 
   def to_s
-    "reg(#@regsym)"
+    @regsym.to_s
   end
 
   def == o
@@ -44,7 +44,7 @@ class RegisterMemory < Value
   end
 
   def to_s
-    "regmem(#@regsym)"
+    "[#@regsym]"
   end
 
   def == o
@@ -66,7 +66,7 @@ class OffsetRegisterMemory < Value
   end
 
   def to_s
-    "iregmem(#@regsym, #@imm)"
+    "[#@regsym, #@imm]"
   end
 
   def == o
@@ -170,7 +170,7 @@ class ImmediateMemory < Value
   end
 
   def to_s
-    "imem(#@imm)"
+    "[#@imm]"
   end
 
   def == o
@@ -194,7 +194,7 @@ class Immediate < Value
   end
 
   def to_s
-    "imm(#@imm)"
+    "[#@imm]"
   end
 
   def value
@@ -225,7 +225,7 @@ class ImmediateLabel < Value
   end
 
   def to_s
-    "l(#{@name.inspect})"
+    @name.inspect
   end
 
   def == o
