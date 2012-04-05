@@ -18,12 +18,14 @@ Installation
 Example
 -------
 
-    foo = A
-    bar = B
-    offset = 42
-    label "loop"
-    add [foo, offset], bar
-    set pc, "loop"
+````ruby
+foo = A
+bar = B
+offset = 42
+label "loop"
+add [foo, offset], bar
+set pc, "loop"
+````
 
 See the examples directory for more sample code.
 
@@ -58,16 +60,20 @@ Literal values are just given as integers. Example: `42` or `0x200`.
 
 Labels are defined by the `label` statement. To refer to a label, just use its name. For example:
 
-   label "loop"
-   add A, 1
-   set pc, "loop"
+````ruby
+label "loop"
+add A, 1
+set pc, "loop"
+````
 
 ### Data
 
 Use the `data` statement to put arbitrary words into the binary.
 
-   label "sin_lookup_table"
-   data 0, 0x38f6, 0x6f12, 0x9f9c, 0xc825, 0xe6a4, 0xf993, 0xffff
+````ruby
+label "sin_lookup_table"
+data 0, 0x38f6, 0x6f12, 0x9f9c, 0xc825, 0xe6a4, 0xf993, 0xffff
+````
 
 ### Miscellaneous
 
