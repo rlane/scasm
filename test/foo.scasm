@@ -1,14 +1,14 @@
-set reg(:A), reg(:B)
-add reg(:A), regmem(:C)
-sub reg(:A), iregmem(:X, 1)
-div reg(:A), pop
-mod reg(:A), peek
-shl reg(:A), push
-shr reg(:A), sp
-and_ reg(:A), pc
-bor reg(:A), o
-xor reg(:A), imem(5)
-ife reg(:A), imm(1)
-ifn reg(:A), imm(32)
-ifg reg(:I), reg(:Y)
-ifb reg(:J), reg(:Z)
+set reg(A), reg(B)
+add reg(A), regmem(C)
+sub reg(A), iregmem(X, 1)
+div reg(A), pop
+mod reg(A), peek
+shl reg(A), push
+shr reg(A), sp
+and_ reg(A), pc
+bor reg(A), o
+xor reg(A), imem(5)
+ife reg(A), imm(1)
+ifn reg(A), imm(32)
+ifg reg(I), reg(Y)
+ifb reg(J), reg(Z)

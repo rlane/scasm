@@ -86,6 +86,11 @@ class Slate < BasicObject
   BASIC_OPCODES.each do |opsym,opcode|
     define_method(opsym) { |*a| inst opsym, *a }
   end
+
+  # Add a constant for each register
+  REGISTERS.each do |regsym,regnum|
+    const_set regsym, regsym
+  end
 end
 
 class Statement
