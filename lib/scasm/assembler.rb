@@ -22,6 +22,8 @@ class Assembler < BasicObject
     io.string
   end
 
+  ## Statements
+
   def inst opsym, a, b
     a = parse_value a
     b = parse_value b
@@ -33,17 +35,20 @@ class Assembler < BasicObject
     @stmts << Label.new(name)
   end
 
-  def reg regsym
-    Register.new regsym
+  def data *words
+    @stmts << Data.new(words)
   end
 
-  def regmem regsym
-    RegisterMemory.new regsym
+  # Add a method for each instruction
+  BASIC_OPCODES.each do |opsym,opcode|
+    define_method(opsym) { |a,b| inst opsym, a, b }
   end
 
-  def iregmem regsym, imm
-    OffsetRegisterMemory.new regsym, imm
+  EXTENDED_OPCODES.each do |opsym,opcode|
+    define_method(opsym) { |a| inst opsym, a, nil }
   end
+
+  ## Values
 
   def pop
     Pop.new
@@ -67,32 +72,6 @@ class Assembler < BasicObject
 
   def o
     O.new
-  end
-
-  def imem imm
-    ImmediateMemory.new imm
-  end
-
-  def imm imm
-    Immediate.new imm
-  end
-
-  def l name
-    ::Kernel.raise "label names must be strings" unless name.is_a? ::String
-    ImmediateLabel.new(name).tap { |x| @relocations << x }
-  end
-
-  def data *words
-    @stmts << Data.new(words)
-  end
-
-  # Add a method for each instruction
-  BASIC_OPCODES.each do |opsym,opcode|
-    define_method(opsym) { |a,b| inst opsym, a, b }
-  end
-
-  EXTENDED_OPCODES.each do |opsym,opcode|
-    define_method(opsym) { |a| inst opsym, a, nil }
   end
 
   # Add a constant for each register
@@ -129,7 +108,7 @@ private
     end
   end
 
-  # Shorter notation for values
+  # Create explicit Values from the shorthand syntax
   def parse_value x
     case x
     when Value, ::NilClass

@@ -35,13 +35,6 @@ class AssemblerTest < Test::Unit::TestCase
     ]
 
     check <<-EOS
-      set reg(A), reg(B)
-      set reg(C), reg(X)
-      set reg(Y), reg(Z)
-      set reg(I), reg(J)
-    EOS
-
-    check <<-EOS
       set A, B
       set C, X
       set Y, Z
@@ -51,13 +44,11 @@ class AssemblerTest < Test::Unit::TestCase
 
   def test_regmem
     expect [0x0cb1]
-    check "set regmem(X), reg(X)"
     check "set [X], X"
   end
 
   def test_iregmem
     expect [0x0d31, 0x002a]
-    check 'set iregmem(X, 42), reg(X)'
     check 'set [X,42], X'
   end
 
@@ -83,21 +74,17 @@ class AssemblerTest < Test::Unit::TestCase
 
   def test_imem
     expect [0x7801, 0x1000]
-    check 'set reg(A), imem(0x1000)'
     check 'set A, [0x1000]'
   end
 
   def test_imm
     expect [0xfc01]
-    check "set reg(A), imm(31)"
     check "set A, 31"
 
     expect [0x7c01, 0x0020]
-    check "set reg(A), imm(32)"
     check "set A, 32"
 
     expect [0x7df1, 0xffff, 0x0020]
-    check "set imm(65535), imm(32)"
     check "set 65535, 32"
   end
 
@@ -107,13 +94,6 @@ class AssemblerTest < Test::Unit::TestCase
       0x8402,
       0x7dc1, 0x0001,
     ]
-
-    check <<-EOS
-      set reg(A), imm(13)
-      label 'loop'
-      add reg(A), imm(1)
-      set pc, l('loop')
-    EOS
 
     check <<-EOS
       set A, 13
