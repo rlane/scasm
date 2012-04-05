@@ -112,6 +112,17 @@ These values have the same meaning as in the spec:
 * `pc`
 * `o`
 
+### Standard Assembly Syntax
+
+SCASM also supports the normal DCPU-16 assembly syntax. Just pass a string to
+the `asm` method:
+
+````ruby
+asm <<-EOS
+  add [1+A], 5
+EOS
+````
+
 Contributing
 ------------
 
