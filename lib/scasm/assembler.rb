@@ -33,7 +33,7 @@ class Assembler < BasicObject
   end
 
   def iregmem regsym, imm
-    OffsetImmediateMemory.new regsym, imm
+    OffsetRegisterMemory.new regsym, imm
   end
 
   def pop

@@ -26,9 +26,13 @@ class RegisterMemory < Value
   def assemble
     return 0x08 + REGISTERS[@regsym]
   end
+
+  def to_s
+    "regmem(#@regsym)"
+  end
 end
 
-class OffsetImmediateMemory < Value
+class OffsetRegisterMemory < Value
   def initialize regsym, imm
     fail "invalid register #{regsym.inspect}" unless REGISTERS.member? regsym
     @regsym = regsym
