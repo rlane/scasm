@@ -146,6 +146,33 @@ class Immediate < Value
   def to_s
     "imm(#@imm)"
   end
+
+  def value
+    @imm
+  end
+end
+
+class ImmediateLabel < Value
+  attr_reader :name
+
+  def initialize name
+    @name = name
+    @imm = nil
+  end
+
+  def resolve imm
+    fail if @imm
+    @imm = imm
+  end
+
+  def assemble
+    #fail unless @imm
+    return 0x1f, (@imm||0) # HACK
+  end
+
+  def to_s
+    @name.inspect
+  end
 end
 
 end

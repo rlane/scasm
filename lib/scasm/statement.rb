@@ -1,12 +1,23 @@
+require 'stringio'
+
 module SCASM
 
 class Statement
+  attr_accessor :addr
+
   def assemble io
+    fail 'unimplemented'
+  end
+
+  def to_s
     fail 'unimplemented'
   end
 end
 
 class Instruction < Statement
+  attr_reader :opsym, :a, :b
+  attr_writer :b # for disassembler
+
   def initialize opsym, a, b
     @opsym = opsym
     @a = a
@@ -38,6 +49,15 @@ class Data < Statement
 end
 
 class Label < Statement
+  attr_reader :name
+
+  def initialize name
+    @name = name
+  end
+
+  def to_s
+    "label #{@name.inspect}"
+  end
 end
 
 end

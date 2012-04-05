@@ -60,19 +60,45 @@ decode_value = lambda do |value|
   end
 end
 
+# Create statements for each instruction
 stmts = []
-
+jumps = Hash.new { |h,k| h[k] = [] }
 while addr < mem.size
+  start_addr = addr
   word = next_word[]
   opcode = word & 0xf
   code_a = (word >> 4) & 0x3f
   code_b = (word >> 10) & 0x3f
+
   opsym = decode_op[opcode]
   a = decode_value[code_a]
   b = decode_value[code_b]
-  stmts << Instruction.new(opsym, a, b)
+
+  if a.is_a? PC and b.is_a? Immediate
+    imm = b.value
+    b = ImmediateLabel.new "L#{b.value}"
+    b.resolve imm
+    jumps[imm] << b
+  end
+
+  inst = Instruction.new(opsym, a, b)
+  inst.addr = start_addr
+  stmts << inst
 end
 
+# Create labels and fixup jumpers
+labelled_stmts = []
 stmts.each do |stmt|
-  puts stmt
+  if jumps.member? stmt.addr
+    jumpers = jumps[stmt.addr]
+    lbl = Label.new("L#{stmt.addr}")
+    lbl.addr = stmt.addr
+    labelled_stmts << lbl
+  end
+  labelled_stmts << stmt
+end
+
+# Output each statement
+labelled_stmts.each do |stmt|
+  printf "%-40s # pc=%d\n" % [stmt, stmt.addr]
 end
