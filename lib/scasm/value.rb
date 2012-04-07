@@ -194,7 +194,7 @@ class Immediate < Value
   end
 
   def to_s
-    "[#@imm]"
+    @imm.to_s
   end
 
   def value
